@@ -8,7 +8,7 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
   - **Ledger Nano** (via USB)
   - **Hardcoded Key** (for testing within the Python app)
 - **Bitcoin Integration:**  
-  Leverages **python-bitcoinlib** (with active community support) for Bitcoin transaction management using ECDSA. (Advanced taproot/schnorr features are not prioritized in this demo.)
+  Leverages **python-bitcoinlib** for Bitcoin transaction management using ECDSA. (Advanced taproot/schnorr features are not prioritized in this demo.)
 - **CLI:**  
   Uses **Click** to build a structured, interactive command-line interface that runs within a terminal emulator such as iTerm2.
 - **Testing:**  
@@ -20,13 +20,13 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
 
 ## 2. Tech Stack & Environment
 
-- **Programming Language:** Python 3.14  
-- **Package Manager:** uv  
+- **Programming Language:** Python 3.14 (this version is already available and installed)
+- **Package Manager:** uv with a `pyproject.toml` file for dependency management
 - **Bitcoin Integration:**  
   - **python-bitcoinlib**
 - **Device Integrations:**  
   - **YubiKey:** yubikey-manager, fido2, pyusb  
-  - **Ledger Nano:** btchip-python, (optional: ledgerblue)  
+  - **Ledger Nano:** btchip-python  
   - **Hardcoded Key:** cryptography
 - **CLI Interface:** Click
 - **Testing Framework:** pytest, pytest-mock, coverage
@@ -41,8 +41,8 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
 ### A. Configuration & Environment Module
 - **Purpose:**  
   Load environment variables, manage configuration, and initialize structured logging.
-- **Key Components:**
-  - **ConfigLoader:** Reads configuration from `.env` and/or config files.
+- **Key Components (located in `src/common`):**
+  - **ConfigLoader:** Reads configuration from the `.env` file.
   - **Logger:** Sets up logging (levels: DEBUG, INFO, WARNING, ERROR).
 - **Data Handling:**  
   Environment values, sensitive keys, and logging streams.
@@ -71,7 +71,7 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
   - **YubiKey Integration:**  
     Uses `yubikey-manager`, `fido2`, and `pyusb` for device detection, key retrieval, and signing.
   - **Ledger Nano Integration:**  
-    Uses `btchip-python` (and optionally `ledgerblue`) for secure signing.
+    Uses `btchip-python` for secure signing.
   - **Hardcoded Key Module:**  
     Uses `cryptography` for testing.
 - **Unified Interface Module:**
@@ -80,10 +80,9 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
       - `get_public_key()`
       - `sign_transaction(transaction_data)`
       - `verify_signature(transaction_data, signature)`
-      - `report_error()`
   - Each device-specific submodule implements this interface, ensuring upstream modules interact with a consistent API.
 - **Error Handling:**  
-  Manage device detection issues, communication errors, and signing failures with descriptive logs and exceptions.
+  Device-specific errors are managed via the common error handling system described in Section 7.
 
 ### D. CLI/Interface Module
 - **Purpose:**  
@@ -131,15 +130,15 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
 ### Task Breakdown
 
 1. **Environment Setup:**
-   - [ ] Create the project root folder `BUSig`.
+   - [x] Root folder `BarqHWMuSig` already created.
    - [ ] Set up a Python 3.14 environment using uv.
-   - [ ] Install all required packages:
-     - `python-bitcoinlib`, `yubikey-manager`, `fido2`, `pyusb`, `btchip-python`, `ledgerblue` (optional), `cryptography`, `Click`, `pytest`, `pytest-mock`, `coverage`, `python-dotenv`.
-   - [ ] Initialize version control (Git) and create a README.
+   - [ ] Install all required packages via the `pyproject.toml` file:
+     - `python-bitcoinlib`, `yubikey-manager`, `fido2`, `pyusb`, `btchip-python`, `cryptography`, `Click`, `pytest`, `pytest-mock`, `coverage`, `python-dotenv`.
+   - [x] Git already initialized.
 
 2. **Configuration & Environment Module:**
-   - [ ] Create configuration files (e.g., `.env`) in a `config/` folder.
-   - [ ] Implement `ConfigLoader` and configure the logging system.
+   - [ ] Create configuration files in the `config/` folder using a standard `.env` file.
+   - [ ] Implement `ConfigLoader` and configure the logging system in `src/common`.
 
 3. **Bitcoin Transaction Management Module:**
    - [ ] Implement `MultisigWallet` using python-bitcoinlib.
@@ -178,15 +177,13 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
 
 ## 5. Scaffolding Guidelines & Folder Structure
 
-**Root Folder:** `BUSig`
+**Root Folder:** `BarqHWMuSig`
 
 ```
-BUSig/
-├── config/                   # Environment files and configuration
-│   ├── .env
-│   └── config.json
+BarqHWMuSig/
+├── config/                   # Environment files and configuration (.env file)
 ├── docs/                     # Documentation and developer guides
-│   └── specification.md      # This spec document
+│   └── spec.md               # This spec file
 ├── src/                      # Source code
 │   ├── bitcoin_transaction/  # Bitcoin transaction management module
 │   │   ├── multisig_wallet.py
@@ -208,17 +205,16 @@ BUSig/
 │   └── test_cli.py
 ├── demo/                     # Demo scripts and instructions
 │   └── demo.py
-├── requirements.txt          # Dependency list
+├── pyproject.toml            # Dependency and package management configuration
 └── README.md                 # Project overview and setup instructions
 ```
 
-**Environment Packages to Install:**
+**Environment Packages to Install (via pyproject.toml):**
 - `python-bitcoinlib`
 - `yubikey-manager`
 - `fido2`
 - `pyusb`
 - `btchip-python`
-- `ledgerblue` (optional)
 - `cryptography`
 - `Click`
 - `pytest`, `pytest-mock`, `coverage`
@@ -230,9 +226,9 @@ BUSig/
 ## 6. Module Interface Details
 
 ### A. Configuration & Environment Module
-- **Classes/Interfaces:**
+- **Classes/Interfaces (in `src/common`):**
   - **ConfigLoader**
-    - *Inputs:* `.env` file, JSON configuration.
+    - *Inputs:* `.env` file.
     - *Outputs:* Config object with key-value pairs.
   - **Logger**
     - *Methods:* `setup_logger()`, with configuration for levels and output streams.
@@ -263,7 +259,6 @@ BUSig/
       - `get_public_key()`
       - `sign_transaction(transaction_data)`
       - `verify_signature(transaction_data, signature)`
-      - `report_error()`
   - **YubiKeyDevice** (implements DeviceInterface)
   - **LedgerDevice** (implements DeviceInterface)
   - **HardcodedKeyDevice** (implements DeviceInterface)
@@ -310,7 +305,7 @@ BUSig/
   - **Transaction Management:**  
     Validate all transaction data; retry or log network errors gracefully.
   - **Device Integration:**  
-    Handle device non-detection, communication failures, or signing errors with clear error messages and fallback strategies.
+    Handle device non-detection, communication failures, or signing errors with clear error messages using the common error handling system.
   - **CLI:**  
     Display user-friendly error messages and instructions for recovery.
 
