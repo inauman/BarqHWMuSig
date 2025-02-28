@@ -1,0 +1,17 @@
+{
+    "wallet_name": "demo_wallet",
+    "public_keys": [
+        "02a1633cafcc01ebfb6d78e39f687a1f0995c62fc95f51ead10a02ee0be551b5dc",
+        "03433f246a12e6486a51ff08802228c61cf895175a9b49ed4766ea9a9294a3c7fe",
+        "02c25e2c5bac7a32d7be381a6b0e7e423c8d5f9b00ce99a7a0c868cf4955641d3c"
+    ],
+    "p2sh_address": "2MxTuLknsRmGNnhbkRWEzY81iscFmz79rsT",
+    "utxos": [
+        {
+            "txid": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "vout": 0,
+            "amount": 1.0,
+            "confirmations": 6
+        }
+    ]
+}
