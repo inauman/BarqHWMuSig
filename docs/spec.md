@@ -20,13 +20,13 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
 
 ## 2. Tech Stack & Environment
 
-- **Programming Language:** Python 3.14 (this version is already available and installed)
-- **Package Manager:** uv with a `pyproject.toml` file for dependency management
+- **Programming Language:** Python 3.14  
+- **Package Manager:** uv  
 - **Bitcoin Integration:**  
   - **python-bitcoinlib**
 - **Device Integrations:**  
   - **YubiKey:** yubikey-manager, fido2, pyusb  
-  - **Ledger Nano:** btchip-python  
+  - **Ledger Nano:** btchip-python, (optional: ledgerblue)  
   - **Hardcoded Key:** cryptography
 - **CLI Interface:** Click
 - **Testing Framework:** pytest, pytest-mock, coverage
@@ -41,8 +41,8 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
 ### A. Configuration & Environment Module
 - **Purpose:**  
   Load environment variables, manage configuration, and initialize structured logging.
-- **Key Components (located in `src/common`):**
-  - **ConfigLoader:** Reads configuration from the `.env` file.
+- **Key Components:**
+  - **ConfigLoader:** Reads configuration from `.env` and/or config files.
   - **Logger:** Sets up logging (levels: DEBUG, INFO, WARNING, ERROR).
 - **Data Handling:**  
   Environment values, sensitive keys, and logging streams.
@@ -71,7 +71,7 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
   - **YubiKey Integration:**  
     Uses `yubikey-manager`, `fido2`, and `pyusb` for device detection, key retrieval, and signing.
   - **Ledger Nano Integration:**  
-    Uses `btchip-python` for secure signing.
+    Uses `btchip-python` (and optionally `ledgerblue`) for secure signing.
   - **Hardcoded Key Module:**  
     Uses `cryptography` for testing.
 - **Unified Interface Module:**
@@ -80,9 +80,10 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
       - `get_public_key()`
       - `sign_transaction(transaction_data)`
       - `verify_signature(transaction_data, signature)`
+      - `report_error()`
   - Each device-specific submodule implements this interface, ensuring upstream modules interact with a consistent API.
 - **Error Handling:**  
-  Device-specific errors are managed via the common error handling system described in Section 7.
+  Manage device detection issues, communication errors, and signing failures with descriptive logs and exceptions.
 
 ### D. CLI/Interface Module
 - **Purpose:**  
@@ -130,15 +131,15 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
 ### Task Breakdown
 
 1. **Environment Setup:**
-   - [x] Root folder `BarqHWMuSig` already created.
+   - [x] Root folder `BarqHWMuSig` already created. Don't need to create it again.
    - [ ] Set up a Python 3.14 environment using uv.
-   - [ ] Install all required packages via the `pyproject.toml` file:
-     - `python-bitcoinlib`, `yubikey-manager`, `fido2`, `pyusb`, `btchip-python`, `cryptography`, `Click`, `pytest`, `pytest-mock`, `coverage`, `python-dotenv`.
-   - [x] Git already initialized.
+   - [ ] Install all required packages:
+     - `python-bitcoinlib`, `yubikey-manager`, `fido2`, `pyusb`, `btchip-python`, `ledgerblue` (optional), `cryptography`, `Click`, `pytest`, `pytest-mock`, `coverage`, `python-dotenv`.
+   - [x] Git already initialized. Don't need to initialize it again.
 
 2. **Configuration & Environment Module:**
-   - [ ] Create configuration files in the `config/` folder using a standard `.env` file.
-   - [ ] Implement `ConfigLoader` and configure the logging system in `src/common`.
+   - [ ] Create configuration files (e.g., `.env`) in a `config/` folder.
+   - [ ] Implement `ConfigLoader` and configure the logging system.
 
 3. **Bitcoin Transaction Management Module:**
    - [ ] Implement `MultisigWallet` using python-bitcoinlib.
@@ -181,9 +182,11 @@ This proof-of-concept (POC) implements a **2-of-3 Bitcoin multisig wallet** usin
 
 ```
 BarqHWMuSig/
-├── config/                   # Environment files and configuration (.env file)
+├── config/                   # Environment files and configuration
+│   ├── .env
+│   └── config.json
 ├── docs/                     # Documentation and developer guides
-│   └── spec.md               # This spec file
+│   └── specification.md      # This spec document
 ├── src/                      # Source code
 │   ├── bitcoin_transaction/  # Bitcoin transaction management module
 │   │   ├── multisig_wallet.py
@@ -205,16 +208,17 @@ BarqHWMuSig/
 │   └── test_cli.py
 ├── demo/                     # Demo scripts and instructions
 │   └── demo.py
-├── pyproject.toml            # Dependency and package management configuration
+├── requirements.txt          # Dependency list
 └── README.md                 # Project overview and setup instructions
 ```
 
-**Environment Packages to Install (via pyproject.toml):**
+**Environment Packages to Install:**
 - `python-bitcoinlib`
 - `yubikey-manager`
 - `fido2`
 - `pyusb`
 - `btchip-python`
+- `ledgerblue` (optional)
 - `cryptography`
 - `Click`
 - `pytest`, `pytest-mock`, `coverage`
@@ -226,9 +230,9 @@ BarqHWMuSig/
 ## 6. Module Interface Details
 
 ### A. Configuration & Environment Module
-- **Classes/Interfaces (in `src/common`):**
+- **Classes/Interfaces:**
   - **ConfigLoader**
-    - *Inputs:* `.env` file.
+    - *Inputs:* `.env` file, JSON configuration.
     - *Outputs:* Config object with key-value pairs.
   - **Logger**
     - *Methods:* `setup_logger()`, with configuration for levels and output streams.
@@ -259,6 +263,7 @@ BarqHWMuSig/
       - `get_public_key()`
       - `sign_transaction(transaction_data)`
       - `verify_signature(transaction_data, signature)`
+      - `report_error()`
   - **YubiKeyDevice** (implements DeviceInterface)
   - **LedgerDevice** (implements DeviceInterface)
   - **HardcodedKeyDevice** (implements DeviceInterface)
@@ -305,7 +310,7 @@ BarqHWMuSig/
   - **Transaction Management:**  
     Validate all transaction data; retry or log network errors gracefully.
   - **Device Integration:**  
-    Handle device non-detection, communication failures, or signing errors with clear error messages using the common error handling system.
+    Handle device non-detection, communication failures, or signing errors with clear error messages and fallback strategies.
   - **CLI:**  
     Display user-friendly error messages and instructions for recovery.
 
