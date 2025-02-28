@@ -11,7 +11,7 @@
 ## Python Environment
 
 ### Version and Setup
-- Use Python 3.10+ (latest stable version)
+- Use Python 3.14.0a5 (alpha version currently installed)
 - Use `uv` for package management instead of pip
 - Use `pyproject.toml` for project configuration (PEP 621)
 - Use virtual environments for isolation
@@ -22,6 +22,7 @@
 - Document all dependencies with purpose and license
 - Regularly audit dependencies for security vulnerabilities
 - Use `pip-audit` or `safety` for dependency security checks
+- Be aware of potential compatibility issues with Python 3.14.0a5 (alpha version)
 
 ## Code Structure
 
@@ -56,6 +57,7 @@
 - Use Protocol for interface definitions
 - Use TypeVar for generic types
 - Document complex type relationships
+- Leverage Python 3.14 type annotation improvements
 
 ### Documentation
 - Use Google-style docstrings
@@ -182,6 +184,14 @@
 - Implement transaction monitoring
 - Handle blockchain reorganizations
 - Implement proper error recovery
+
+## Python 3.14 Alpha Considerations
+- Be aware of potential instability in the alpha release
+- Document any workarounds for alpha-specific issues
+- Consider fallback options for critical functionality
+- Test thoroughly with the alpha version
+- Stay updated on Python 3.14 release notes and changes
+- Be prepared to adapt code as Python 3.14 moves toward stable release
 
 ## Updates
 This document should be reviewed and updated quarterly or when significant changes are made to the project requirements or when new Python best practices emerge. 

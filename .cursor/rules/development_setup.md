@@ -1,13 +1,26 @@
 # Development Setup Guide
 
-## Environment Setup
+## Current Environment Status
+
+### Project Setup
+- Root folder `BarqHWMuSig` already created
+- Python 3.14.0a5 already installed and pinned for the project
+- Virtual environment already created
+- UV package manager already installed via Homebrew
+
+## Environment Setup for New Developers
 
 ### Python Installation
-- Install Python 3.10+ (recommended: 3.12 for best performance)
-- Ensure pip is updated to the latest version
+- Install Python 3.14.0a5 (for consistency with current development)
+  - On macOS: `brew install python@3.14` or download from python.org
+  - On Linux: Use pyenv or compile from source
+  - On Windows: Download from python.org
+- Ensure pip is updated to the latest version: `python -m pip install --upgrade pip`
 
 ### Package Management with UV
-- Install UV: `pip install uv`
+- Install UV: 
+  - On macOS: `brew install uv` 
+  - Other platforms: `pip install uv`
 - Use UV for virtual environment creation: `uv venv`
 - Use UV for package installation: `uv pip install <package>`
 - Use UV for dependency resolution: `uv pip compile pyproject.toml -o requirements.txt`
@@ -27,7 +40,7 @@ name = "barqhwmusig"
 version = "0.1.0"
 description = "Bitcoin Multisig POC with Hardware Wallet Integration"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.14"
 license = {text = "MIT"}
 authors = [
     {name = "Your Name", email = "your.email@example.com"},
@@ -59,14 +72,14 @@ dev = [
 
 [tool.black]
 line-length = 88
-target-version = ["py310"]
+target-version = ["py314"]
 
 [tool.isort]
 profile = "black"
 line_length = 88
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.14"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -74,7 +87,7 @@ disallow_incomplete_defs = true
 
 [tool.ruff]
 line-length = 88
-target-version = "py310"
+target-version = "py314"
 select = ["E", "F", "B", "I", "N", "UP", "ANN", "S", "A"]
 ignore = ["ANN101"]  # Missing type annotation for `self`
 
@@ -149,7 +162,7 @@ addopts = "--cov=src --cov-report=term-missing"
 ## Project Structure Setup
 
 ```
-BarqHWMuSig/
+BarqHWMuSig/  # Root folder (already created)
 ├── .cursor/                  # Cursor IDE configuration
 │   └── rules/                # Development rules and guidelines
 ├── .github/                  # GitHub workflows and templates
@@ -179,14 +192,13 @@ BarqHWMuSig/
 
 ## Development Workflow
 
-### Initial Setup
+### Initial Setup for New Developers
 1. Clone the repository
-2. Create a virtual environment: `uv venv`
-3. Activate the virtual environment:
-   - Windows: `.venv\Scripts\activate`
-   - Unix/MacOS: `source .venv/bin/activate`
-4. Install dependencies: `uv pip install -e ".[dev]"`
-5. Install pre-commit hooks: `pre-commit install`
+2. Activate the existing virtual environment:
+   - Unix/MacOS: `source venv/bin/activate`
+   - Windows: `venv\Scripts\activate`
+3. Install dependencies: `uv pip install -e ".[dev]"`
+4. Install pre-commit hooks: `pre-commit install`
 
 ### Development Cycle
 1. Create a feature branch: `git checkout -b feature/feature-name`
