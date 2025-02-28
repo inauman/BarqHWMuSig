@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+.env.prod
+.env.staging
+# Keep development environment file
+!.env.dev
+!.env.local
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+
+# Security
+*.pem
+*.key
+*.cert
+*.crt
+# Keep test keys for development
+!config/test_key.pem
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Project specific
+config/config.json
+!config/config.json.example 
